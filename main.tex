@@ -1,0 +1,91 @@
+\documentclass[12pt]{extarticle}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{cite}
+\usepackage{xcolor}
+\usepackage{linearb}
+% \usepackage{pdfpages}
+\usepackage{framed}
+\usepackage[framemethod=tikz]{mdframed}
+
+\setlength{\parskip}{0.5em}
+
+\newenvironment{comentarios_meta}
+    {\begin{framed}\noindent\textcolor{red}{\textbf{//}}}
+    {\end{framed}}
+
+\title{Trabajo Final \\ Aprendizaje Estadístico: Teoría y Aplicación}
+\author{M. Cura, G. Albarello}
+\date{Diciembre 2019}
+
+\begin{document}
+
+\maketitle
+
+\begin{comentarios_meta}
+    REVISAR todas las boludeces q ponga martín
+\end{comentarios_meta}
+
+\begin{abstract}
+    El uso de redes neuronales artificiales se ha vuelto uno de los enfoques más prevalentes en la aplicación de \textit{machine learning} en los últimos años, popularidad alcanzada gracias a herramientas que permiten su implementación sin necesitar un entendimiento matemático profundo de las mismas. Como trabajo final para la materia Aprendizaje Estadístico presentamos un recorrido por las ideas presentadas en el capítulo 16 del libro \textit{A Distribution-Free Theory of Nonparametric Regression}, de Györfi et al., en el cual se exploran estimaciones de redes neuronales artificiales y los formalismos matemáticos que permiten validar sus propiedades de consistencia y orden de convergencia.
+\end{abstract}
+
+
+\section{Fundamentos de redes neuronales}
+
+    Las redes neuronales artificiales, comúnmente llamadas solo redes neuronales, son una modelización simplificada de las redes de neuronas del cerebro donde cada nodo recibe cierta cantidad de entradas (\textit{inputs}) ponderadas y determina si ``encender'' su salida (\textit{output}) en base a una función umbral. El resultado de la neurona, i.e. su salida, puede entonces caracterizarse mediante
+    \begin{equation*}    
+        g(x) = \sigma(a^T x + b)
+    \end{equation*}
+
+    Mediante la combinación de varias neuronas artificiales se puede intentar reconocer patrones más complejos, y esto suele utilizarse junto a un algoritmo de aprendizaje (como por ejemplo un perceptrón) para derivar las ponderaciones de los nodos que den la salida deseada dadas entradas conocidas y se espere que clasifique correctamente entradas desconocidas. Para reconocer clases más complejas se suelen agregar capas escondidas que puedan capturar dicha complejidad.
+    \begin{comentarios_meta}
+        Escribir más sobre para qué sirven, utilidad, y eso sobre redes neuronales artificiales?
+    \end{comentarios_meta}
+    
+    Las funciones de activación, particularmente las funciones sigmoides, a veces llamadas funciones ``aplastadoras'' (\textit{squashing functions})\footnote{Continuando la tradición de la materia de inventar traducciones para los términos en inglés.}, convierten su entradas infinita al intervalo $[0,1]$ de forma no decreciente, con
+    \begin{equation*}
+        lim_{x \to -\infty} \sigma(x) = 0 \textnormal{ y } lim_{x \to \infty} \sigma(x) = 1
+    \end{equation*}
+    Algunas a mencionar son heaviside, rampa, coseno, y gaussiana.
+    
+
+\section{Consistencia}
+
+    ...
+
+
+\section{Orden de convergencia}
+
+    ...
+    
+
+\section{Teorlemas?}
+
+    ...
+
+
+
+
+% \bibliographystyle{plain}
+% \bibliography{main}
+% \centering \linbfamily{\BPhorse}
+
+
+\begin{comentarios_meta}
+    Incluir páginas del cap. 16? Medio innecesario y tal vez bastante ilegal :grimacing:
+\end{comentarios_meta}
+
+\end{document}
+
+
+%%% To include image
+% \begin{figure}[!htb]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{img/domenicani-fig1.png}
+% \end{figure}
+
+%%% To include pdf
+% \includepdf[pages=2-]{Domeniconi2017.pdf}
