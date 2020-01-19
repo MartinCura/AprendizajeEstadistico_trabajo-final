@@ -35,7 +35,7 @@
 
 \section{Fundamentos de redes neuronales}
 
-    Las redes neuronales artificiales, comúnmente llamadas solo redes neuronales, son una modelización simplificada de las redes de neuronas del cerebro donde cada nodo recibe cierta cantidad de entradas (\textit{inputs}) ponderadas y determina si ``encender'' su salida (\textit{output}) en base a una función umbral. El resultado de la neurona, i.e. su salida, puede entonces caracterizarse mediante
+    Las redes neuronales artificiales, comúnmente llamadas simplemente redes neuronales, son una modelización simplificada de las redes de neuronas del cerebro donde cada nodo recibe cierta cantidad de entradas (\textit{inputs}) ponderadas y determina si ``encender'' su salida (\textit{output}) en base a una función umbral. El resultado de la neurona, i.e. su salida, puede entonces caracterizarse mediante
     \begin{equation*}    
         g(x) = \sigma(a^T x + b)
     \end{equation*}
@@ -50,11 +50,30 @@
         lim_{x \to -\infty} \sigma(x) = 0 \textnormal{ y } lim_{x \to \infty} \sigma(x) = 1
     \end{equation*}
     Algunas a mencionar son heaviside, rampa, coseno, y gaussiana.
-    
+    \begin{comentarios_meta}
+	Explayar algo sobre razones para elegir una u otra?
+    \end{comentarios_meta}
 
 \section{Consistencia}
 
-    ... además...
+    \begin{comentarios_meta}
+        ... explicar consistencia...
+    \end{comentarios_meta}
+    
+    Minimizar el riesgo $L_2$ empírico
+    \begin{equation}
+        \label{eq:riesgo_l2}
+        \frac{1}{n} \sum_{j=1}^{n} | f(X_j) - Y_j |^2
+    \end{equation}
+    para la clase de redes neuronales
+    \begin{equation*}
+	    \mathcal{F}_n = \left\{  \sum_{i=1}^{k_n} c_i \sigma\left(a_i^T x + b_i\right) + c_0 \::\: k_n \in \mathcal{N},\, a_i \in \mathcal{R}^d, b_i \in \mathcal{R}, \sum_{i=0}^{k_n} \left|c_i\right| \leq \beta_n  \right\}
+    \end{equation*}
+    En este análisis se asume que el mínimo existe, aun si pueda no ser único. Para optimizar hacia el $m_n \in \mathcal{F}_n$ que minimice la Ec. \ref{eq:riesgo_l2} no hay un algoritmo computacionalmente práctico que logre un mínimo global, y en su lugar se suele utilizar \textit{backpropagation} para converger iterativamente hacia un mínimo local del riesgo $L_2$ empírico.
+
+    El teorema de consistencia establece que con ciertas restricciones sobre $\beta_n$ y $k_n$ la minimización del riesgo $L_2$ empírico provee estimaciones del redes neuronales que son \textbf{universalmente consistentes}.
+    Además, con ciertas restricciones sobre $\beta$ esta consistencia universal débil puede convertirse en fuerte.
+    
 
 
 \section{Orden de convergencia}
@@ -75,7 +94,8 @@
 
 
 \begin{comentarios_meta}
-    Incluir páginas del cap. 16? Medio innecesario y tal vez bastante ilegal :grimacing:
+    Incluir las páginas del cap. 16? Medio innecesario y tal vez bastante ilegal :grimacing:
+    % \includepdf[pages=1-3]{abc.pdf}
 \end{comentarios_meta}
 
 \end{document}
