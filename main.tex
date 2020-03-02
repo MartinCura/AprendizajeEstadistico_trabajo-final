@@ -6,6 +6,7 @@
 \usepackage{cite}
 \usepackage{xcolor}
 \usepackage{linearb}
+\usepackage{dsfont}
 % \usepackage{pdfpages}
 \usepackage{framed}
 \usepackage[framemethod=tikz]{mdframed}
@@ -13,54 +14,68 @@
 \setlength{\parskip}{0.5em}
 
 \newenvironment{comentarios_meta}
-    {\begin{framed}\noindent\textcolor{red}{\textbf{//}}}
+    {\begin{framed}\noindent\textcolor{red}{\textbf{\#}}}
     {\end{framed}}
 
 \title{Trabajo Final \\ Aprendizaje Estadístico: Teoría y Aplicación}
-\author{G. Albarello, M. Cura}
-\date{Diciembre 2019}
+\author{G. Albarello ${}^{97119}$,
+M. Cura ${}^{95874}$}
+\date{Febrero 2020}
 
 \begin{document}
 
 \maketitle
 
-\begin{comentarios_meta}
-    REVISAR todas las boludeces q ponga martín!
-\end{comentarios_meta}
+%\begin{comentarios_meta_off}
+%    REVISAR todas las boludeces q ponga martín!
+%\end{comentarios_meta_off}
 
 \begin{abstract}
-    El uso de redes neuronales artificiales se ha vuelto uno de los enfoques más prevalentes en la aplicación de \textit{machine learning} en los últimos años, popularidad alcanzada gracias a herramientas que permiten su implementación sin necesitar un entendimiento matemático profundo de las mismas. Como trabajo final para la materia Aprendizaje Estadístico presentamos un recorrido por las ideas presentadas en el capítulo 16 del libro \textit{A Distribution-Free Theory of Nonparametric Regression}, de Györfi et al., en el cual se exploran estimaciones de redes neuronales artificiales y los formalismos matemáticos que permiten validar sus propiedades de consistencia y orden de convergencia.
+    El uso de redes neuronales artificiales se ha vuelto uno de los enfoques más prevalentes en la aplicación de \textit{machine learning} en los últimos años, popularidad alcanzada gracias a herramientas que permiten su implementación sin necesitar un entendimiento matemático profundo de las mismas. Como trabajo final para la materia Aprendizaje Estadístico presentamos un recorrido por las ideas expuestas en el capítulo 16 del libro \textit{A Distribution-Free Theory of Nonparametric Regression}, de Györfi et al. (2002), en el cual se exploran estimaciones de redes neuronales artificiales y los formalismos matemáticos que permiten validar sus propiedades de consistencia y orden de convergencia.
 \end{abstract}
 
 
+\newpage
 \section{Fundamentos de redes neuronales}
 
-    Las redes neuronales artificiales, comúnmente llamadas simplemente redes neuronales, son una modelización simplificada de las redes de neuronas del cerebro donde cada nodo recibe cierta cantidad de entradas (\textit{inputs}) ponderadas y determina si ``encender'' su salida (\textit{output}) en base a una función umbral. El resultado de la neurona, i.e. su salida, puede entonces caracterizarse mediante
+    Las redes neuronales artificiales, comúnmente llamadas simplemente redes neuronales, son una modelización (muy) simplificada de las redes de neuronas biológicas del cerebro donde cada nodo recibe cierta cantidad de entradas (\textit{inputs}) ponderadas y determina si ``encender'' su salida (\textit{output}) en base a una función umbral. El resultado de la neurona, i.e. su salida, puede entonces caracterizarse mediante
     \begin{equation*}    
-        g(x) = \sigma(a^T x + b)
+        g(x) = \sigma\left(a^T x + b\right)
     \end{equation*}
 
-    Mediante la combinación de varias neuronas artificiales se puede intentar reconocer patrones más complejos, y esto suele utilizarse junto a un algoritmo de aprendizaje (como por ejemplo un perceptrón) para derivar las ponderaciones de los nodos que den la salida deseada dadas entradas conocidas y se espere que clasifique correctamente entradas desconocidas. Para reconocer clases más complejas se suelen agregar capas escondidas que puedan capturar dicha complejidad.
-    \begin{comentarios_meta}
-        Escribir más sobre para qué sirven, utilidad, y eso sobre redes neuronales artificiales?
-    \end{comentarios_meta}
+    Mediante la combinación de varias neuronas artificiales (red neuronal) se puede intentar reconocer patrones más complejos, lo cual suele complementarse con un algoritmo de aprendizaje (como por ejemplo un perceptrón) para derivar las ponderaciones de los nodos que den la salida deseada dadas entradas conocidas con el fin de lograr un sistema que al recibir entradas desconocidas las clasifique correctamente. Para reconocer clases más complejas se suelen agregar capas escondidas (\textit{hidden layers}) que puedan capturar una representación de dicha complejidad latente.
     
-    Las funciones de activación, particularmente las funciones sigmoides, a veces llamadas funciones ``aplastadoras'' (\textit{squashing functions})\footnote{Continuando la tradición de la materia de inventar traducciones para los términos en inglés.}, convierten su entradas infinita al intervalo $[0,1]$ de forma no decreciente, con
+    Un uso común para redes neuronales es en el reconocimiento de imágenes: nos es difícil a los humanos enseñarle a una computadora cómo reconocer, por ejemplo, un gato en una fotografía. Una NN puede ser entrenada para que converja a un modelo que sirva como clasificador para un set de imágenes nuevo, correctamente identificando en un enorme porcentaje de los casos si hay un gato o no en una imagen. Dada la gigantezca cantidad de datos que se recopilan hoy en día, es cada vez más fácil disponer de un enorme set de entrenamiento.
+    %\begin{comentarios_meta}
+    %    ¿Escribir más sobre para qué sirven, utilidad, y eso sobre redes neuronales artificiales?
+    %\end{comentarios_meta}
+    
+    Las funciones de activación, particularmente las funciones sigmoides, a veces llamadas funciones ``aplastadoras'' (\textit{squashing functions})\footnote{Continuando la tradición de la materia de inventar traducciones para los términos en inglés.}, transforman su entrada, de dominio infinito, al intervalo $[0,1]$ de forma no decreciente, con
     \begin{equation*}
-        lim_{x \to -\infty} \sigma(x) = 0 \textnormal{ y } lim_{x \to \infty} \sigma(x) = 1
+        \lim_{x \to -\infty} \sigma(x) = 0
+        \textnormal{ y}
+        \lim_{x \to \infty} \sigma(x) = 1
     \end{equation*}
-    Algunas a mencionar son heaviside, rampa, coseno, y gaussiana.
-    \begin{comentarios_meta}
-	Explayar algo sobre razones para elegir una u otra?
-    \end{comentarios_meta}
+    Algunas a mencionar son:
+    \begin{itemize}
+        \item \textbf{Heaviside:} Simple pero muy utilizado en ciertos casos. No recomendable para usar en capas ocultas ya que no permite múltiples valores de salida.
+        \item \textbf{Rampa:} Converge rapidamente en el algoritmo de \textit{backpropagation} y acepta múltiples valores de salida.
+        \item \textbf{Logística:} Salida normalizada y suave entre 0 y 1 por cada neurona. Puede hacer que el proceso de aprendizaje sea lento o directamente no avance desde cierto punto.
+    \end{itemize}
 
 \section{Consistencia}
 
-    \begin{comentarios_meta}
-        ... explicar consistencia...
-    \end{comentarios_meta}
+    La consistencia de un estimador es una forma de medir de cierta manera si y cuánto se reduce el error a medida que aumenta el tamaño de la muestra. Un estimador consistente es tal que converge uniformemente al valor verdadero de la población de la distribución a medida que el tamaño de la muestra aumenta.
     
-    Minimizar el riesgo $L_2$ empírico
+    La consistencia puede ser débil o fuerte. El primer caso, débil, se alcanza cuando la esperanza del error cuadratico medio tiende a cero a medida que la cantidad de muestras aumenta. La consistencia fuerte ocurre cuando el estimador converge en probabilidad al valor verdadero a medida que aumentan la cantidad de muestras. Que una secuencia de variables aleatorias converja en probabilidad se expresa como:
+    \begin{equation*}
+        \lim_{n \to -\infty} Pr(|X_n - X| > \epsilon) = 0
+    \end{equation*}
+    % \begin{comentarios_meta}
+    %     Completar
+    % \end{comentarios_meta}
+    
+    Se busca minimizar el riesgo $L_2$ empírico
     \begin{equation}
         \label{eq:riesgo_l2}
         \frac{1}{n} \sum_{j=1}^{n} | f(X_j) - Y_j |^2
@@ -69,23 +84,65 @@
     \begin{equation*}
 	    \mathcal{F}_n = \left\{  \sum_{i=1}^{k_n} c_i \sigma\left(a_i^T x + b_i\right) + c_0 \::\: k_n \in \mathcal{N},\, a_i \in \mathcal{R}^d, b_i \in \mathcal{R}, \sum_{i=0}^{k_n} \left|c_i\right| \leq \beta_n  \right\}
     \end{equation*}
-    En este análisis se asume que el mínimo existe, aun si pueda no ser único. Para optimizar hacia el $m_n \in \mathcal{F}_n$ que minimice la Ec. \ref{eq:riesgo_l2} no hay un algoritmo computacionalmente práctico que logre un mínimo global, y en su lugar se suele utilizar \textit{backpropagation} para converger iterativamente hacia un mínimo local del riesgo $L_2$ empírico.
-
-    El teorema de consistencia establece que con ciertas restricciones sobre $\beta_n$ y $k_n$ la minimización del riesgo $L_2$ empírico provee estimaciones del redes neuronales que son \textbf{universalmente consistentes}.
-    Además, con ciertas restricciones sobre $\beta$ esta consistencia universal débil puede convertirse en fuerte.
+    obteniendo $m_n \in \mathcal{F}_n$ que satisfaga
+    \begin{equation*}
+        \frac{1}{n} \sum_{j=1}^{n} {\left| m_n(X_j) - Y_j \right|}^2
+        = \min_{f \in \mathcal{F}_n} \frac{1}{n} \sum_{j=1}^{n} {\left| f(X_j) - Y_j \right|}^2.
+    \end{equation*}
     
+    En este análisis se asume que el mínimo existe, aun si pueda no ser único. Para optimizar hacia la red $m_n \in \mathcal{F}_n$ que minimice la Ec. \ref{eq:riesgo_l2} no hay un algoritmo computacionalmente práctico que logre un mínimo global, y en su lugar se suele utilizar \textit{backpropagation} para converger, iterativamente, hacia un mínimo local del riesgo $L_2$ empírico.
+
+    El teorema de consistencia \textbf{16.1} establece que con ciertas restricciones sobre $\beta_n$ y $k_n$ la minimización del riesgo $L_2$ empírico provee estimaciones del redes neuronales que son \textbf{universalmente consistentes}. Esto es, se puede demostrar que dadas dichas condiciones (que incluyen que $k_n \to \infty$ y $\beta_n \to \infty$) se ve cómo a medida que $n \to \infty$ tendremos que
+    \begin{equation}
+        \label{eq:weak_univ_cons}
+        \mathds{E} \int {(m_n(x) - m(x))}^{2} \mu(dx) \to 0
+    \end{equation}
+    
+    Además, el teorema agrega que con ciertas restricciones adicionales sobre $\beta_n$ esta consistencia universal débil se vuelve consistencia universal fuerte; dicho de otra manera, que
+    \begin{equation*}
+        \int {(m_n(x) - m(x))}^{2} \mu(dx) \to 0
+        \textnormal{ a.s.}
+    \end{equation*}
+
+    Demostrar la consistencia universal de estas redes neuronales como clasificadores es muy importante porque prueba que, para una distribucion cualquiera de datos, existe al menos alguna red neuronal que puede clasificar los datos teniendo suficientes datos.
+    % \begin{comentarios_meta}
+    %     Mmm...
+    % \end{comentarios_meta}
+    
+    La sección siguiente del capítulo demuestra un par de lemas sobre densidad y otros sobre \textit{covering numbers} (cuyas propiedades se describen en el otro libro base de la materia\footnote{Devroye, Györfi, Lugosi. \textit{A Probabilistic Theory of Pattern Recognition}. 1996.}). Es aprovechando los resultados de estos lemas que puede más adelante demostrar el \textbf{teorema 16.1} ya expresado.
+    
+    El lema 16.2 extiende el lema 16.1 tal que para cualquier funcion contenida en $L_2$ se pueda encontrar una red neuronal que satisfaga que el error cuadrático sea menor a un epsilon. En el lema  16.3, por último, se comparan las dimensiones Vapnik-Chervonenkis (VC) de grafos de composiciones de funciones (i.e. $\mathcal{G} = \left\{ g \circ f \mid g : \mathcal{R} \rightarrow \mathcal{R}, f \in \mathcal{F} \right\}$).
+    % \begin{comentarios_meta}
+    %     El lema 16.3 es sobre la dimensión Vapnik–Chervonenkis de grafos de composiciones de funciones ($g \circ f \mid g : R \rightarrow R, f \in \mathcal{F}$)
+    % \end{comentarios_meta}
 
 
 \section{Orden de convergencia}
 
-    ...
+    Comprobada la convergencia a cero (Ec. \ref{eq:weak_univ_cons}) para la clase de redes neuronales siendo examinadas, queda analizar qué tan \textit{rápido} ocurre esta convergencia.
+    % Para esto se explora su orden de convergencia.
+    
+    Mediante el teorema \textbf{16.2}, para $m_n$ con función aplastadora $\sigma$ definida minimizando el riesgo empírico penalizado, se puede lograr acotar el lado izquierdo de la Ec. \ref{eq:weak_univ_cons}. Esto es un paso intermedio para mostrar cómo se puede manejar el error de aproximación al decir que el lado izquierda de la Ec. \ref{eq:weak_univ_cons} tiende a 0.
+    % \begin{comentarios_meta}
+    %     Teorema 16.2: para $m_n$ con función aplastadora $\sigma$ definida por minimizar el riesgo empírico penalizado, puede ¿acotar? el lado izquierdo de la ecuación \ref{eq:weak_univ_cons}. Esto es, es un paso intermedio para mostrar cómo puede manejar el error de aproximación al decir que el lado izquierdo de \ref{eq:weak_univ_cons} tiende a 0... ¿no?
+    % \end{comentarios_meta}
+    
+    El teorema \textbf{16.3} busca proveer el orden de convergencia para la estimación de red neuronal con una función aplastadora general. Muestra asímismo que con condiciones similares a las del teorema anterior se puede acotar y obtener el orden de la Ec. \ref{eq:weak_univ_cons} (en función de $\beta_n$). Para la demostración de este teorema utiliza un refinamiento de lemas anteriores, expresado como un nuevo lema (16.6).
+    % \begin{comentarios_meta}
+    %     Teorema 16.3: Provee el orden de convergencia para la estimación de red neuronal con una función aplastadora general. Muestra que con condiciones similares a las del teorema anterior se puede acotar y obtener el orden de la Eq. \ref{eq:weak_univ_cons} (en función de $\beta_n$).
+    % \end{comentarios_meta}
+    
+    Finalmente, con los lemas \textbf{16.7} y \textbf{16.8}, se puede buscar derivar el orden de aproximación de combinaciones convexas en $L_2(\mu)$ (siendo $\mu$ la medida de probabilidad o \textit{probability measure}) y se usan en última instancia para derivar el orden de convergencia y aproximación para las redes neuronales con funciones aplastadores.
+    % \begin{comentarios_meta}
+    %     Nuevamente refina un lema (a partir de otros anteriores) para poder completar la demostración del último teorema mencionado. Con un último par de lemas (16.7-8) que se usarán para derivar el orden de convergencia y aproximación para las redes neuronales con funciones aplastadoras.
+    % \end{comentarios_meta}
     
 
-\section{Teorlemas?}
+\section{Conclusiones}
 
-    ...
-
-
+    Con la ubicuidad de herramientas para el análisis de datos y el llamado aprendizaje automático que proliferaron rápidamente en la última década, se aceleró vertiginosamente el uso que se le da a estas para todo tipo de aplicaciones, tanto académicos como comerciales. Esta explosión y democratización de conceptos medianamente complejos muchas veces resulta en que se barra bajo la alfombra las bases matemáticas y de teoría probabilística sobre las cuales están firmemente basadas, pero estas ideas esperan allí al que quiera escarbar un poco más de la superficie.
+    
+    Aun con la complejidad del libro, nos pareció valioso explorar e intentar entender los conceptos matemáticos algo más avanzados (esto es, más allá de las multiplicaciones de matrices) que respalda el avance sin pausa de esta disciplina en la cual se cruzan fuertemente la matemática y la computación.
 
 
 % \bibliographystyle{plain}
@@ -93,10 +150,10 @@
 % \centering \linbfamily{\BPhorse}
 
 
-\begin{comentarios_meta}
-    Incluir las páginas del cap. 16? Medio innecesario y tal vez bastante ilegal :grimacing:
-    % \includepdf[pages=1-3]{abc.pdf}
-\end{comentarios_meta}
+% \begin{comentarios_meta}
+%     Incluir las páginas del cap. 16? Medio innecesario y tal vez bastante ilegal :grimacing:
+%     % \includepdf[pages=1-3]{abc.pdf}
+% \end{comentarios_meta}
 
 \end{document}
 
